@@ -4,12 +4,12 @@ public class Employee {
     private Position position;
     private int jobSeniority, salary;
 
-    public Employee(String name, String surname, Position position, int jobSeniority, int salary) {
+    public Employee(String name, String surname, int jobSeniority, int salary, Position position) {
         this.name = name;
         this.surname = surname;
-        this.position = position;
         this.jobSeniority = jobSeniority;
         this.salary = salary;
+        this.position = position;
     }
 
     public String getName() {

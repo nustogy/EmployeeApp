@@ -32,13 +32,13 @@ public class Main {
         panel.setLayout(new BorderLayout());
 
 
-        String[] columnName = {"Name", "Surname", "Position", "Job seniority", "Salary"};
+        String[] columnName = {"Name", "Surname","Job seniority", "Salary", "Position"};
 
         JTextArea textArea = new JTextArea();
         textArea.setEditable(false);
 
 
-        final JTextField[] addFields = new JTextField[5];
+        final JTextField[] addFields = new JTextField[4];
         JPanel menu = new JPanel();
 
 
@@ -49,6 +49,8 @@ public class Main {
 
         }
 
+        JComboBox positionList = new JComboBox(Position.values());
+        menu.add(positionList);
 
         JButton addButton = new JButton("Add employee");
         menu.add(addButton);
@@ -56,16 +58,16 @@ public class Main {
 
 
         addButton.addActionListener(e -> {
-            Employee employee = new Employee(addFields[0].getText(), addFields[1].getText(), Position.valueOf(addFields[2].getText()), Integer.parseInt(addFields[3].getText()), Integer.parseInt(addFields[4].getText()));
+            Employee employee = new Employee(addFields[0].getText(), addFields[1].getText(), Integer.parseInt(addFields[2].getText()), Integer.parseInt(addFields[3].getText()), Position.valueOf(positionList.getSelectedItem().toString()));
             employeeList.addEmployee(employee);
             textArea.setText(employeeList.toString());
 
         });
 
 
-        Employee[][] employeesArr = {{new Employee("Anna", "Nowak", Position.DIRECTOR, 15, 15000)},
-                {new Employee("Tomasz", "Kowalski", Position.SPECIALIST, 4, 4000)},
-                {new Employee("Anna", "Nowak", Position.ASSISTANT, 1, 3000)}};
+        Employee[][] employeesArr = {{new Employee("Anna", "Nowak", 15, 15000, Position.DIRECTOR)},
+                {new Employee("Tomasz", "Kowalski", 4, 4000, Position.SPECIALIST)},
+                {new Employee("Anna", "Nowak", 1, 3000, Position.ASSISTANT)}};
 
         employeeList.addEmployee(employeesArr[0][0]);
         employeeList.addEmployee(employeesArr[1][0]);
@@ -76,7 +78,7 @@ public class Main {
         panel.add(textArea, BorderLayout.CENTER);
 
 
-        frame.setSize(740, 600);
+        frame.setSize(900, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.add(panel);
