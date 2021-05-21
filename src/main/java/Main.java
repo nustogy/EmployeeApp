@@ -24,7 +24,7 @@ public class Main {
 
     public static void createAndShowGUI() {
 
-        EmployeeList employeeList = new EmployeeList();
+        EmployeeModel employeeModel = new EmployeeModel();
         JFrame frame = new JFrame();
 
 
@@ -32,19 +32,24 @@ public class Main {
         panel.setLayout(new BorderLayout());
 
 
-        String[] columnName = {"Name", "Surname","Job seniority", "Salary", "Position"};
-
-        JTextArea textArea = new JTextArea();
-        textArea.setEditable(false);
+        JTable table = new JTable(employeeModel);
+        table.setAutoCreateRowSorter(true);
 
 
-        final JTextField[] addFields = new JTextField[4];
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        panel.add(scrollPane, BorderLayout.CENTER);
+
+
+
+        JTextField[] addFields = new JTextField[4];
         JPanel menu = new JPanel();
 
 
         for (int i = 0; i < addFields.length; i++) {
 
-            addFields[i] = new JTextField(columnName[i], 10);
+            addFields[i] = new JTextField(employeeModel.getColumnName(i), 10);
             menu.add(addFields[i]);
 
         }
@@ -56,32 +61,45 @@ public class Main {
         menu.add(addButton);
         panel.add(menu, BorderLayout.PAGE_START);
 
+        JButton removeButton = new JButton("Remove employee");
+        menu.add(removeButton);
+
+
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         addButton.addActionListener(e -> {
-            Employee employee = new Employee(addFields[0].getText(), addFields[1].getText(), Integer.parseInt(addFields[2].getText()), Integer.parseInt(addFields[3].getText()), Position.valueOf(positionList.getSelectedItem().toString()));
-            employeeList.addEmployee(employee);
-            textArea.setText(employeeList.toString());
+            Employee employee = new Employee(addFields[0].getText(), addFields[1].getText(), Integer.parseInt(addFields[2].getText()), Integer.parseInt(addFields[3].getText()),
+                    Position.setPositionByPositionName(positionList.getSelectedItem().toString()));
+            employeeModel.add(employee);
+        });
+
+        removeButton.addActionListener(e -> {
+            if(table.getSelectedRow() != -1){
+                int rowIndex = table.convertRowIndexToModel(table.getSelectedRow());
+                employeeModel.remove(rowIndex);
+            }
 
         });
 
-
         Employee[][] employeesArr = {{new Employee("Anna", "Nowak", 15, 15000, Position.DIRECTOR)},
                 {new Employee("Tomasz", "Kowalski", 4, 4000, Position.SPECIALIST)},
-                {new Employee("Anna", "Nowak", 1, 3000, Position.ASSISTANT)}};
+                {new Employee("Katarzyna", "Lewandowska", 1, 3000, Position.ASSISTANT)}};
 
-        employeeList.addEmployee(employeesArr[0][0]);
-        employeeList.addEmployee(employeesArr[1][0]);
-        employeeList.addEmployee(employeesArr[2][0]);
-        textArea.setText(employeeList.toString());
+        employeeModel.add(employeesArr[0][0]);
+        employeeModel.add(employeesArr[1][0]);
+        employeeModel.add(employeesArr[2][0]);
+        employeeModel.fireTableStructureChanged();
 
 
-        panel.add(textArea, BorderLayout.CENTER);
+
 
 
         frame.setSize(900, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.add(panel);
+
+
 
     }
 }
