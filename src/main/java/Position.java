@@ -8,22 +8,18 @@ public enum Position {
         this.positionName = positionName;
     }
 
+
     @Override
     public String toString() {
         return positionName;
     }
 
-    public static Position setPositionByPositionName(String positionName){
-        switch(positionName){
-
-            case "assistant": return ASSISTANT;
-            case "board member": return BOARD_MEMBER;
-            case "coordinator": return COORDINATOR;
-            case "director": return DIRECTOR;
-            case "manager": return MANAGER;
-            case "specialist": return SPECIALIST;
-
-        }
-        return null;
+    public void setPositionName(String positionName) {
+        this.positionName = positionName;
     }
+
+    public String getPositionName() {
+        return positionName;
+    }
+
 }

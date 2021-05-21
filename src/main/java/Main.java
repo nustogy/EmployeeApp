@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
@@ -42,7 +43,6 @@ public class Main {
         panel.add(scrollPane, BorderLayout.CENTER);
 
 
-
         JTextField[] addFields = new JTextField[4];
         JPanel menu = new JPanel();
 
@@ -57,6 +57,10 @@ public class Main {
         JComboBox positionList = new JComboBox(Position.values());
         menu.add(positionList);
 
+        JComboBox positionListTable = new JComboBox(Position.values());
+        TableColumn positionColumn = table.getColumnModel().getColumn(4);
+        positionColumn.setCellEditor(new DefaultCellEditor(positionListTable));
+
         JButton addButton = new JButton("Add employee");
         menu.add(addButton);
         panel.add(menu, BorderLayout.PAGE_START);
@@ -67,19 +71,29 @@ public class Main {
 
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
+
         addButton.addActionListener(e -> {
-            Employee employee = new Employee(addFields[0].getText(), addFields[1].getText(), Integer.parseInt(addFields[2].getText()), Integer.parseInt(addFields[3].getText()),
-                    Position.setPositionByPositionName(positionList.getSelectedItem().toString()));
-            employeeModel.add(employee);
+            Employee employee;
+            try {
+                employee = new Employee(addFields[0].getText(), addFields[1].getText(), Integer.parseInt(addFields[2].getText()), Integer.parseInt(addFields[3].getText()),
+                        (Position) positionList.getSelectedItem());
+                employeeModel.add(employee);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(frame, "Incorrect salary or job seniority, please check if you typed numbers only", "Incorrect data", JOptionPane.ERROR_MESSAGE);
+                ex.getCause();
+            }
+
         });
 
+
         removeButton.addActionListener(e -> {
-            if(table.getSelectedRow() != -1){
+            if (table.getSelectedRow() != -1) {
                 int rowIndex = table.convertRowIndexToModel(table.getSelectedRow());
                 employeeModel.remove(rowIndex);
             }
 
         });
+
 
         Employee[][] employeesArr = {{new Employee("Anna", "Nowak", 15, 15000, Position.DIRECTOR)},
                 {new Employee("Tomasz", "Kowalski", 4, 4000, Position.SPECIALIST)},
@@ -88,9 +102,6 @@ public class Main {
         employeeModel.add(employeesArr[0][0]);
         employeeModel.add(employeesArr[1][0]);
         employeeModel.add(employeesArr[2][0]);
-        employeeModel.fireTableStructureChanged();
-
-
 
 
 
@@ -102,4 +113,5 @@ public class Main {
 
 
     }
+
 }

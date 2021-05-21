@@ -11,19 +11,22 @@ public class EmployeeModel extends AbstractTableModel {
     EmployeeModel() {
 
         employeeList = new ArrayList<Employee>();
+
     }
 
     public void add(Employee employee){
         employeeList.add(employee);
-        fireTableStructureChanged();
+        fireTableDataChanged();
     }
 
 
     public void remove(int index) {
     employeeList.remove(index);
-    fireTableStructureChanged();
+        fireTableDataChanged();
 
     }
+
+
     @Override
     public String getColumnName(int index){
         return columnName[index];
@@ -47,6 +50,30 @@ public class EmployeeModel extends AbstractTableModel {
     @Override
     public int getColumnCount() {
         return 5;
+    }
+    @Override
+    public void setValueAt(Object updatedValue, int rowIndex, int columnIndex)
+    {
+        Employee employee = employeeList.get(rowIndex);
+        if(columnIndex == 0) {
+            employee.setName((String) updatedValue);
+        }
+        else if(columnIndex == 1) {
+            employee.setSurname((String) updatedValue);
+        }
+        else if(columnIndex == 2) {
+           employee.setJobSeniority((Integer) updatedValue);
+        }
+        else if(columnIndex == 3) {
+            employee.setSalary((Integer) updatedValue);
+        }
+        else {
+            employee.setPosition((Position) updatedValue);
+        }
+    }
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return true;
     }
 
     @Override
