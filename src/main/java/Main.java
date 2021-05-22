@@ -3,6 +3,7 @@ import javax.swing.table.*;
 import java.awt.*;
 import java.io.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -21,6 +22,7 @@ public class Main {
 
 
         EmployeeModel employeeModel = new EmployeeModel();
+
         try {
             employeeModel.addExampleEmployees();
         } catch (SalaryOutOfBoundsException e) {
@@ -45,7 +47,6 @@ public class Main {
 
         JTextField[] addFields = new JTextField[4];
         JPanel menu = new JPanel();
-
 
 
         for (int i = 0; i < addFields.length; i++) {
@@ -79,6 +80,34 @@ public class Main {
         JButton importButton = new JButton("Import data");
         menu.add(importButton);
 
+        JPanel filterPanel = new JPanel();
+        JLabel[] filterLabels = {new JLabel("filter salary below the value: "), new JLabel("filter salary above the value: ")};
+
+        JLabel label = new JLabel("Filter employees by salary:");
+        filterPanel.add(label);
+        JTextField filterField = new JTextField(10);
+        filterPanel.add(filterField);
+
+        JButton filterBelow = new JButton("Filter below");
+        filterPanel.add(filterBelow);
+        JButton filterAbove = new JButton("Filter above");
+        filterPanel.add(filterAbove);
+        JButton filterReset = new JButton("Reset filter");
+        filterPanel.add(filterReset);
+
+        JLabel searchLabel = new JLabel("Type phrase to search: ");
+        filterPanel.add(searchLabel);
+
+        JTextField searchField = new JTextField(20);
+        filterPanel.add(searchField);
+
+        JButton searchButton = new JButton("Search");
+        filterPanel.add(searchButton);
+
+
+        panel.add(filterPanel, BorderLayout.PAGE_END);
+
+
         addButton.addActionListener(e -> {
             Employee employee;
             try {
@@ -111,12 +140,13 @@ public class Main {
             int returnValue = fileChooser.showSaveDialog(menu);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
-                EmployeeExport.exportEmployees(file.getAbsolutePath(), employeeModel.getEmployeeList() );
+                EmployeeExport.exportEmployees(file.getAbsolutePath(), employeeModel.getEmployeeList());
 
 
-            }});
+            }
+        });
 
-        importButton.addActionListener(e ->{
+        importButton.addActionListener(e -> {
 
             int returnValue = fileChooser.showSaveDialog(menu);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
@@ -127,16 +157,36 @@ public class Main {
             }
         });
 
+        filterBelow.addActionListener(e -> {
+
+            employeeModel.filterBySalaryBelow(Integer.parseInt(filterField.getText()));
+
+        });
+
+        filterAbove.addActionListener(e -> {
+            employeeModel.filterBySalaryAbove(Integer.parseInt(filterField.getText()));
+        });
+
+        filterReset.addActionListener(e -> {
+
+            employeeModel.resetFilter();
+        });
+
+        searchButton.addActionListener(e -> {
+            String textToSearch = searchField.getText();
+            if (textToSearch.isEmpty())
+                employeeModel.resetFilter();
+            else
+                employeeModel.filterByKeyWord(textToSearch);
+        });
 
 
+        frame.setSize(1200, 600);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+        frame.add(panel);
 
-
-            frame.setSize(1200,600);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setVisible(true);
-            frame.add(panel);
-
-
-}
 
     }
+
+}

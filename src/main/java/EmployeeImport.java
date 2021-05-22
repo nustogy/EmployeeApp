@@ -8,7 +8,8 @@ import java.util.List;
 public class EmployeeImport {
 
     public static List<Employee> importEmployees(String filePath) {
-        // TODO: 22.05.2021 exception handling
+        // TODO: 22.05.2021 exception handling:q
+
         BufferedReader bufferedReader;
         FileReader fileReader = null;
         String line = "";

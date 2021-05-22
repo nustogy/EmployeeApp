@@ -5,40 +5,46 @@ import java.util.stream.Collectors;
 
 public class EmployeeModel extends AbstractTableModel {
 
-    private List<Employee> employeeModel;
+    private List<Employee> employeeList;
+    private List<Employee> employeeBeforeFilterList;
 
 
     private final String[] columnName = {"Name", "Surname", "Job seniority", "Salary", "Position"};
 
     EmployeeModel() {
-
-        employeeModel = new ArrayList<Employee>();
-
+        employeeList = new ArrayList<Employee>();
     }
 
     public void add(Employee employee) {
-        employeeModel.add(employee);
+        employeeList.add(employee);
+        if (employeeBeforeFilterList != null)
+            employeeBeforeFilterList.add(employee);
+
         fireTableDataChanged();
     }
-
 
     public void remove(int index) {
-        employeeModel.remove(index);
-        fireTableDataChanged();
+        if (employeeBeforeFilterList != null) {
+            Employee toRemove = employeeList.get(index);
+            employeeBeforeFilterList.remove(toRemove);
+        }
 
+        employeeList.remove(index);
+        fireTableDataChanged();
     }
+
     public void replaceAll(List<Employee> list) {
-        employeeModel= list;
+        resetFilter();
+        employeeList = list;
         fireTableDataChanged();
     }
 
     public Employee get(int index) {
-        return employeeModel.get(index);
+        return employeeList.get(index);
     }
 
-    public List<Employee> getEmployeeList(){
-
-        return new ArrayList<>(employeeModel);
+    public List<Employee> getEmployeeList() {
+        return new ArrayList<>(employeeList);
     }
 
     @Override
@@ -58,7 +64,7 @@ public class EmployeeModel extends AbstractTableModel {
 
     @Override
     public int getRowCount() {
-        return employeeModel == null ? 0 : employeeModel.size();
+        return employeeList == null ? 0 : employeeList.size();
     }
 
     @Override
@@ -68,7 +74,7 @@ public class EmployeeModel extends AbstractTableModel {
 
     @Override
     public void setValueAt(Object updatedValue, int rowIndex, int columnIndex) {
-        Employee employee = employeeModel.get(rowIndex);
+        Employee employee = employeeList.get(rowIndex);
         if (columnIndex == 0) {
             employee.setName((String) updatedValue);
         } else if (columnIndex == 1) {
@@ -90,7 +96,7 @@ public class EmployeeModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Employee employee = employeeModel.get(rowIndex);
+        Employee employee = employeeList.get(rowIndex);
         if (columnIndex == 0)
             return employee.getName();
         else if (columnIndex == 1)
@@ -110,11 +116,65 @@ public class EmployeeModel extends AbstractTableModel {
                 {new Employee("Tomasz", "Kowalski", 4, 4000, Position.SPECIALIST)},
                 {new Employee("Katarzyna", "Lewandowska", 1, 2500, Position.ASSISTANT)}};
 
-        employeeModel.add(employeesArr[0][0]);
-        employeeModel.add(employeesArr[1][0]);
-        employeeModel.add(employeesArr[2][0]);
+        employeeList.add(employeesArr[0][0]);
+        employeeList.add(employeesArr[1][0]);
+        employeeList.add(employeesArr[2][0]);
 
     }
 
+    public void filterBySalaryBelow(int salary) {
+        if (employeeBeforeFilterList == null) {
+            employeeBeforeFilterList = employeeList;
+        }
 
+        employeeList = employeeBeforeFilterList
+                .stream()
+                .filter(a -> a.getSalary() < salary)
+                .collect(Collectors.toList());
+
+        fireTableDataChanged();
+    }
+
+
+    public void filterBySalaryAbove(int salary) {
+
+        if (employeeBeforeFilterList == null) {
+            employeeBeforeFilterList = employeeList;
+        }
+
+        employeeList = employeeBeforeFilterList
+                .stream()
+                .filter(a -> a.getSalary() > salary)
+                .collect(Collectors.toList());
+
+        fireTableDataChanged();
+    }
+
+    public void resetFilter() {
+        if (employeeBeforeFilterList != null) {
+            employeeList = employeeBeforeFilterList;
+            employeeBeforeFilterList = null;
+            fireTableDataChanged();
+        }
+    }
+
+    public void filterByKeyWord(String text) {
+        if (employeeBeforeFilterList == null) {
+            employeeBeforeFilterList = employeeList;
+        }
+
+        String lowerCaseText = text.toLowerCase();
+        employeeList = employeeBeforeFilterList
+                .stream()
+                .filter(a -> a.getName().toLowerCase().equals(lowerCaseText)
+                        || a.getSurname().toLowerCase().equals(lowerCaseText)
+                        || String.valueOf(a.getJobSeniority()).equals(lowerCaseText)
+                        || String.valueOf(a.getSalary()).equals(lowerCaseText)
+                        || a.getPosition().toString().equals(lowerCaseText))
+
+                .collect(Collectors.toList());
+
+        fireTableDataChanged();
+
+    }
 }
