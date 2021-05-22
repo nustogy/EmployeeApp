@@ -1,14 +1,14 @@
+import Exception.EmptyFieldException;
+import Exception.SalaryOutOfBoundsException;
+
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class EmployeeModel extends AbstractTableModel {
-
     private List<Employee> employeeList;
     private List<Employee> employeeBeforeFilterList;
-
-
     private final String[] columnName = {"Name", "Surname", "Job seniority", "Salary", "Position"};
 
     EmployeeModel() {
@@ -19,7 +19,6 @@ public class EmployeeModel extends AbstractTableModel {
         employeeList.add(employee);
         if (employeeBeforeFilterList != null)
             employeeBeforeFilterList.add(employee);
-
         fireTableDataChanged();
     }
 
@@ -121,7 +120,6 @@ public class EmployeeModel extends AbstractTableModel {
         employeeList.add(employeesArr[0][0]);
         employeeList.add(employeesArr[1][0]);
         employeeList.add(employeesArr[2][0]);
-
     }
 
     public void filterBySalaryBelow(int salary) {
@@ -133,13 +131,10 @@ public class EmployeeModel extends AbstractTableModel {
                 .stream()
                 .filter(a -> a.getSalary() < salary)
                 .collect(Collectors.toList());
-
         fireTableDataChanged();
     }
 
-
     public void filterBySalaryAbove(int salary) {
-
         if (employeeBeforeFilterList == null) {
             employeeBeforeFilterList = employeeList;
         }
@@ -148,7 +143,6 @@ public class EmployeeModel extends AbstractTableModel {
                 .stream()
                 .filter(a -> a.getSalary() > salary)
                 .collect(Collectors.toList());
-
         fireTableDataChanged();
     }
 
@@ -173,10 +167,7 @@ public class EmployeeModel extends AbstractTableModel {
                         || String.valueOf(a.getJobSeniority()).equals(lowerCaseText)
                         || String.valueOf(a.getSalary()).equals(lowerCaseText)
                         || a.getPosition().toString().equals(lowerCaseText))
-
                 .collect(Collectors.toList());
-
         fireTableDataChanged();
-
     }
 }
