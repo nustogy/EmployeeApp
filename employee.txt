@@ -1,4 +1,0 @@
-Name	Surname	Job Seniority	Salary	 Position
-Tomasz	Kowalski	specialist	4	4000
-Katarzyna	Lewandowska	assistant	1	2500
-Name		assistant	7	1599
