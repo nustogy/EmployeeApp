@@ -41,7 +41,6 @@ public class Main {
         table.setAutoCreateRowSorter(true);
 
 
-
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -163,8 +162,21 @@ public class Main {
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
 
-                List<Employee> importedEmployees = EmployeeImport.importEmployees(file.getAbsolutePath());
-                employeeModel.replaceAll(importedEmployees);
+                List<Employee> importedEmployees = null;
+                try {
+                    importedEmployees = EmployeeImport.importEmployees(file.getAbsolutePath());
+                    employeeModel.replaceAll(importedEmployees);
+                } catch (IOException ioException) {
+                    JOptionPane.showMessageDialog(frame, "Chosen file cannot be read", "Incorrect data", JOptionPane.ERROR_MESSAGE);
+                    ioException.printStackTrace();
+                } catch (EmptyFieldException emptyFieldException) {
+                    JOptionPane.showMessageDialog(frame, "Empty name or surname field in the file", "Incorrect data", JOptionPane.ERROR_MESSAGE);
+                    emptyFieldException.printStackTrace();
+                } catch (SalaryOutOfBoundsException salaryOutOfBoundsException) {
+                    JOptionPane.showMessageDialog(frame, "Salary is inadequate to position, please amend it", "Incorrect data", JOptionPane.ERROR_MESSAGE);
+                    salaryOutOfBoundsException.printStackTrace();
+                }
+
             }
         });
 

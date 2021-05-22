@@ -7,8 +7,8 @@ import java.util.List;
 
 public class EmployeeImport {
 
-    public static List<Employee> importEmployees(String filePath) {
-        // TODO: 22.05.2021 exception handling:q
+    public static List<Employee> importEmployees(String filePath) throws IOException, EmptyFieldException, SalaryOutOfBoundsException {
+
 
         BufferedReader bufferedReader;
         FileReader fileReader = null;
@@ -16,35 +16,25 @@ public class EmployeeImport {
         Employee employee;
         List<Employee> importedEmployees = new ArrayList<Employee>();
 
-        try {
-            fileReader = new FileReader(filePath);
-        } catch (
-                FileNotFoundException fileNotFoundException) {
-            fileNotFoundException.printStackTrace();
-        }
+
+        fileReader = new FileReader(filePath);
+
+
         bufferedReader = new BufferedReader(fileReader);
-        try {
-            bufferedReader.readLine();
 
-            while ((line = bufferedReader.readLine()) != null) {
+        bufferedReader.readLine();
 
-                String[] employeeLine = line.split("\\t");
-                employee = new Employee(employeeLine[0], employeeLine[1], Integer.parseInt(employeeLine[2]), Integer.parseInt(employeeLine[3]), Position.findPositionByPositionName(employeeLine[4]));
+        while ((line = bufferedReader.readLine()) != null) {
+
+            String[] employeeLine = line.split("\\t");
+            employee = new Employee(employeeLine[0], employeeLine[1], Integer.parseInt(employeeLine[2]), Integer.parseInt(employeeLine[3]), Position.findPositionByPositionName(employeeLine[4]));
 
 
+            importedEmployees.add(employee);
 
-                importedEmployees.add(employee);
-
-            }
-
-        } catch (
-                IOException ioException) {
-            ioException.printStackTrace();
-        } catch (SalaryOutOfBoundsException salaryOutOfBoundsException) {
-            salaryOutOfBoundsException.printStackTrace();
-        } catch (EmptyFieldException e) {
-            e.printStackTrace();
         }
+
+
         return importedEmployees;
     }
 
