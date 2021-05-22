@@ -1,6 +1,7 @@
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EmployeeModel extends AbstractTableModel {
 
@@ -29,6 +30,11 @@ public class EmployeeModel extends AbstractTableModel {
 
     public Employee get(int index) {
         return employeeModel.get(index);
+    }
+
+    public List<Employee> getEmployeeList(){
+
+        return new ArrayList<>(employeeModel);
     }
 
     @Override

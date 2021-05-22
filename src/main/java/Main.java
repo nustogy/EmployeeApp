@@ -2,6 +2,7 @@ import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -48,6 +49,7 @@ public class Main {
         JPanel menu = new JPanel();
 
 
+
         for (int i = 0; i < addFields.length; i++) {
 
             addFields[i] = new JTextField(employeeModel.getColumnName(i), 10);
@@ -72,6 +74,9 @@ public class Main {
         JButton exportButton = new JButton("Export data");
         menu.add(exportButton);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
 
         addButton.addActionListener(e -> {
@@ -103,29 +108,15 @@ public class Main {
 
         exportButton.addActionListener(e -> {
 
-            FileWriter fileWriter;
-            BufferedWriter bufferedWriter;
+            int returnValue = fileChooser.showSaveDialog(menu);
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                EmployeeExport.exportEmployees(file.getAbsolutePath(), employeeModel.getEmployeeList() );
 
-            String filePath = "employee.txt";
-            String line = "";
-            try {
-                fileWriter = new FileWriter(filePath);
-                bufferedWriter = new BufferedWriter(fileWriter);
 
-                line = "Name\tSurname\tJob Seniority\tSalary\t Position\n";
-                bufferedWriter.write(line);
-                for (int i = 0; i < employeeModel.getRowCount(); i++) {
-                    line = employeeModel.get(i).toString();
-                    bufferedWriter.write(line);
-                }
+            }});
 
-                bufferedWriter.flush();
-                bufferedWriter.close();
 
-            } catch (IOException ex) {
-                ex.getMessage();
-            }
-        });
 
 
 
