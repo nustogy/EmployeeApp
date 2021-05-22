@@ -27,6 +27,10 @@ public class EmployeeModel extends AbstractTableModel {
         fireTableDataChanged();
 
     }
+    public void replaceAll(List<Employee> list) {
+        employeeModel= list;
+        fireTableDataChanged();
+    }
 
     public Employee get(int index) {
         return employeeModel.get(index);
@@ -111,4 +115,6 @@ public class EmployeeModel extends AbstractTableModel {
         employeeModel.add(employeesArr[2][0]);
 
     }
+
+
 }

@@ -15,9 +15,6 @@ public enum Position {
         return maxSalary;
     }
 
-    Position(String positionName) {
-        this.positionName = positionName;
-    }
 
     Position(String positionName, int minSalary, int maxSalary) {
         this.positionName = positionName;
@@ -25,13 +22,30 @@ public enum Position {
         this.maxSalary = maxSalary;
     }
 
+
+    public static Position findPositionByPositionName(String positionName) {
+        switch (positionName) {
+
+            case "assistant":
+                return ASSISTANT;
+            case "board member":
+                return BOARD_MEMBER;
+            case "coordinator":
+                return COORDINATOR;
+            case "director":
+                return DIRECTOR;
+            case "manager":
+                return MANAGER;
+            case "specialist":
+                return SPECIALIST;
+
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         return positionName;
-    }
-
-    public void setPositionName(String positionName) {
-        this.positionName = positionName;
     }
 
     public String getPositionName() {

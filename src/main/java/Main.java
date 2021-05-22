@@ -1,10 +1,8 @@
 import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.List;
 
 public class Main {
 
@@ -78,6 +76,8 @@ public class Main {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
+        JButton importButton = new JButton("Import data");
+        menu.add(importButton);
 
         addButton.addActionListener(e -> {
             Employee employee;
@@ -116,7 +116,16 @@ public class Main {
 
             }});
 
+        importButton.addActionListener(e ->{
 
+            int returnValue = fileChooser.showSaveDialog(menu);
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+
+                List<Employee> importedEmployees = EmployeeImport.importEmployees(file.getAbsolutePath());
+                employeeModel.replaceAll(importedEmployees);
+            }
+        });
 
 
 

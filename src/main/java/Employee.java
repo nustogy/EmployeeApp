@@ -58,9 +58,9 @@ public class Employee {
     public String toString() {
         return name + '\t'
                 + surname + '\t'
-                + position + '\t'
                 + jobSeniority + '\t'
-                + salary + '\n';
+                + salary + '\t'
+                + position + '\n';
     }
 
     public boolean validateSalary() {
