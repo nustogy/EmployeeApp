@@ -27,6 +27,8 @@ public class Main {
             employeeModel.addExampleEmployees();
         } catch (SalaryOutOfBoundsException e) {
             e.printStackTrace();
+        } catch (EmptyFieldException e) {
+            e.printStackTrace();
         }
         JFrame frame = new JFrame();
 
@@ -37,6 +39,7 @@ public class Main {
 
         JTable table = new JTable(employeeModel);
         table.setAutoCreateRowSorter(true);
+
 
 
         JScrollPane scrollPane = new JScrollPane(table);
@@ -109,21 +112,29 @@ public class Main {
 
 
         addButton.addActionListener(e -> {
-            Employee employee;
             try {
-                employee = new Employee(addFields[0].getText(), addFields[1].getText(), Integer.parseInt(addFields[2].getText()), Integer.parseInt(addFields[3].getText()),
-                        (Position) positionList.getSelectedItem());
-                if (!employee.validateSalary())
-                    throw new SalaryOutOfBoundsException();
+                String employeeName = addFields[0].getText();
+                String employeeSurname = addFields[1].getText();
+                int jobSeniority = Integer.parseInt(addFields[2].getText());
+                int salary = Integer.parseInt(addFields[3].getText());
+                Position position = (Position) positionList.getSelectedItem();
+
+                Employee employee = new Employee(employeeName, employeeSurname, jobSeniority, salary, position);
                 employeeModel.add(employee);
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(frame, "Incorrect salary or job seniority, please check if you typed numbers only", "Incorrect data", JOptionPane.ERROR_MESSAGE);
-                ex.getCause();
+                System.out.println(ex.getCause());
 
 
             } catch (SalaryOutOfBoundsException ex) {
                 JOptionPane.showMessageDialog(frame, "Salary is inadequate to position, please amend it", "Incorrect data", JOptionPane.ERROR_MESSAGE);
-                ex.getCause();
+                System.out.println(ex.getCause());
+
+            } catch (EmptyFieldException ex) {
+                JOptionPane.showMessageDialog(frame, "Name or surname field is empty, please fill it", "Incorrect data", JOptionPane.ERROR_MESSAGE);
+                System.out.println(ex.getCause());
+
+
             }
         });
 

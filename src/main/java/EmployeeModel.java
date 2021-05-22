@@ -76,14 +76,16 @@ public class EmployeeModel extends AbstractTableModel {
     public void setValueAt(Object updatedValue, int rowIndex, int columnIndex) {
         Employee employee = employeeList.get(rowIndex);
         if (columnIndex == 0) {
-            employee.setName((String) updatedValue);
+            if (!((String) updatedValue).isEmpty())
+                employee.setName((String) updatedValue);
         } else if (columnIndex == 1) {
-            employee.setSurname((String) updatedValue);
+            if (!((String) updatedValue).isEmpty())
+                employee.setSurname((String) updatedValue);
         } else if (columnIndex == 2) {
             employee.setJobSeniority((Integer) updatedValue);
         } else if (columnIndex == 3) {
-            // TODO: 21.05.2021 salary validation 
-            employee.setSalary((Integer) updatedValue);
+            if (employee.validateNewSalary((Integer) updatedValue))
+                employee.setSalary((Integer) updatedValue);
         } else {
             employee.setPosition((Position) updatedValue);
         }
@@ -110,7 +112,7 @@ public class EmployeeModel extends AbstractTableModel {
 
     }
 
-    public void addExampleEmployees() throws SalaryOutOfBoundsException {
+    public void addExampleEmployees() throws SalaryOutOfBoundsException, EmptyFieldException {
 
         Employee[][] employeesArr = {{new Employee("Anna", "Nowak", 15, 20000, Position.DIRECTOR)},
                 {new Employee("Tomasz", "Kowalski", 4, 4000, Position.SPECIALIST)},

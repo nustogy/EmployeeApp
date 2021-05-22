@@ -27,14 +27,10 @@ public class EmployeeImport {
             bufferedReader.readLine();
 
             while ((line = bufferedReader.readLine()) != null) {
-                employee = new Employee(null, null, 0, 0, null);
-                String[] employeeLine = line.split("\\t");
 
-                employee.setName(employeeLine[0]);
-                employee.setSurname(employeeLine[1]);
-                employee.setJobSeniority(Integer.parseInt(employeeLine[2]));
-                employee.setSalary(Integer.parseInt(employeeLine[3]));
-                employee.setPosition(Position.findPositionByPositionName(employeeLine[4]));
+                String[] employeeLine = line.split("\\t");
+                employee = new Employee(employeeLine[0], employeeLine[1], Integer.parseInt(employeeLine[2]), Integer.parseInt(employeeLine[3]), Position.findPositionByPositionName(employeeLine[4]));
+
 
 
                 importedEmployees.add(employee);
@@ -46,6 +42,8 @@ public class EmployeeImport {
             ioException.printStackTrace();
         } catch (SalaryOutOfBoundsException salaryOutOfBoundsException) {
             salaryOutOfBoundsException.printStackTrace();
+        } catch (EmptyFieldException e) {
+            e.printStackTrace();
         }
         return importedEmployees;
     }

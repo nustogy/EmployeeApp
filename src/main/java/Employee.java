@@ -1,17 +1,22 @@
 public class Employee {
 
 
-
     private String name, surname;
     private Position position;
     private int jobSeniority, salary;
 
-    public Employee(String name, String surname, int jobSeniority, int salary, Position position) throws SalaryOutOfBoundsException {
+    public Employee(String name, String surname, int jobSeniority, int salary, Position position) throws SalaryOutOfBoundsException, EmptyFieldException {
+        if(name.isEmpty() || surname.isEmpty())
+                throw new EmptyFieldException();
         this.name = name;
         this.surname = surname;
         this.jobSeniority = jobSeniority;
-        this.salary = salary;
         this.position = position;
+
+        if(!validateNewSalary(salary))
+            throw new SalaryOutOfBoundsException();
+
+        this.salary = salary;
     }
 
     public String getName() {
@@ -64,7 +69,12 @@ public class Employee {
     }
 
     public boolean validateSalary() {
-      return salary <= position.getMaxSalary() && salary >= position.getMinSalary();
+        return salary <= position.getMaxSalary() && salary >= position.getMinSalary();
+
+    }
+
+    public boolean validateNewSalary(int newSalary) {
+        return newSalary <= position.getMaxSalary() && newSalary >= position.getMinSalary();
 
     }
 }
