@@ -1,14 +1,9 @@
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.JTextComponent;
+import javax.swing.table.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Main {
 
@@ -25,7 +20,13 @@ public class Main {
 
     public static void createAndShowGUI() {
 
+
         EmployeeModel employeeModel = new EmployeeModel();
+        try {
+            employeeModel.addExampleEmployees();
+        } catch (SalaryOutOfBoundsException e) {
+            e.printStackTrace();
+        }
         JFrame frame = new JFrame();
 
 
@@ -68,7 +69,8 @@ public class Main {
         JButton removeButton = new JButton("Remove employee");
         menu.add(removeButton);
 
-
+        JButton exportButton = new JButton("Export data");
+        menu.add(exportButton);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 
@@ -77,14 +79,19 @@ public class Main {
             try {
                 employee = new Employee(addFields[0].getText(), addFields[1].getText(), Integer.parseInt(addFields[2].getText()), Integer.parseInt(addFields[3].getText()),
                         (Position) positionList.getSelectedItem());
+                if (!employee.validateSalary())
+                    throw new SalaryOutOfBoundsException();
                 employeeModel.add(employee);
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(frame, "Incorrect salary or job seniority, please check if you typed numbers only", "Incorrect data", JOptionPane.ERROR_MESSAGE);
                 ex.getCause();
+
+
+            } catch (SalaryOutOfBoundsException ex) {
+                JOptionPane.showMessageDialog(frame, "Salary is inadequate to position, please amend it", "Incorrect data", JOptionPane.ERROR_MESSAGE);
+                ex.getCause();
             }
-
         });
-
 
         removeButton.addActionListener(e -> {
             if (table.getSelectedRow() != -1) {
@@ -94,24 +101,42 @@ public class Main {
 
         });
 
+        exportButton.addActionListener(e -> {
 
-        Employee[][] employeesArr = {{new Employee("Anna", "Nowak", 15, 15000, Position.DIRECTOR)},
-                {new Employee("Tomasz", "Kowalski", 4, 4000, Position.SPECIALIST)},
-                {new Employee("Katarzyna", "Lewandowska", 1, 3000, Position.ASSISTANT)}};
+            FileWriter fileWriter;
+            BufferedWriter bufferedWriter;
 
-        employeeModel.add(employeesArr[0][0]);
-        employeeModel.add(employeesArr[1][0]);
-        employeeModel.add(employeesArr[2][0]);
+            String filePath = "employee.txt";
+            String line = "";
+            try {
+                fileWriter = new FileWriter(filePath);
+                bufferedWriter = new BufferedWriter(fileWriter);
+
+                line = "Name\tSurname\tJob Seniority\tSalary\t Position\n";
+                bufferedWriter.write(line);
+                for (int i = 0; i < employeeModel.getRowCount(); i++) {
+                    line = employeeModel.get(i).toString();
+                    bufferedWriter.write(line);
+                }
+
+                bufferedWriter.flush();
+                bufferedWriter.close();
+
+            } catch (IOException ex) {
+                ex.getMessage();
+            }
+        });
 
 
 
-        frame.setSize(900, 600);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-        frame.add(panel);
 
 
+            frame.setSize(1200,600);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setVisible(true);
+            frame.add(panel);
 
-    }
 
 }
+
+    }

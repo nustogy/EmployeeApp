@@ -1,10 +1,12 @@
 public class Employee {
 
+
+
     private String name, surname;
     private Position position;
     private int jobSeniority, salary;
 
-    public Employee(String name, String surname, int jobSeniority, int salary, Position position) {
+    public Employee(String name, String surname, int jobSeniority, int salary, Position position) throws SalaryOutOfBoundsException {
         this.name = name;
         this.surname = surname;
         this.jobSeniority = jobSeniority;
@@ -59,5 +61,10 @@ public class Employee {
                 + position + '\t'
                 + jobSeniority + '\t'
                 + salary + '\n';
+    }
+
+    public boolean validateSalary() {
+      return salary <= position.getMaxSalary() && salary >= position.getMinSalary();
+
     }
 }
